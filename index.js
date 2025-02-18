@@ -9,13 +9,14 @@ connectDB()
 console.log("enter into backend")
 app.use('/', cartRoutes);
 
+app.use('/',cartRoutes)
+
 app.get("/",(req,res)=>{
     res.send("welcom to the Login ")
 })
 
 app.use('/',cartRoutes)
-
-
+app.use('/',cartRoutes)
 
 
 app.listen(3000, () => {

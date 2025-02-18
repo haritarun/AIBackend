@@ -2,6 +2,7 @@
 const {Together} = require("together-ai"); 
 const { uploadBase64toImage } = require("../utils");
 const ImageModel = require('../model/ImageModel');
+const LikedModel = require('../model/LikedModel')
 
 
 const imageCart = async (req, res) => {
@@ -62,4 +63,37 @@ const getImage = async (req,res) =>{
     }
 }
 
-module.exports = { imageCart, getImage };
+const getLiked = async (req,res)=>{
+    const {prompt,imageUrl}=req.body
+    const user = await LikedModel.findOne({prompt,imageUrl})
+    if (user){
+        await LikedModel.deleteOne({_id:user._id})
+        res.status(200).json({message:"Deleted Successfully"})
+    }
+    else{
+        try{
+            const newLike = new LikedModel({
+                prompt,
+                imageUrl,
+            })
+            await newLike.save()
+        
+            res.status(200).json({message:"successfully saved"})
+        }
+        catch(e){
+            res.staus(400).json({message:"something went wrong"})
+        }
+    }
+}
+
+const likedImage = async (req,res) =>{
+    const user = await LikedModel.find()
+    try{
+        res.status(200).json(user)
+    }
+    catch(e){
+        res.status(400).json({message:"something went wrong"})
+    }
+}
+
+module.exports = { imageCart, getImage ,getLiked,likedImage};
