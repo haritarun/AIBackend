@@ -67,11 +67,16 @@ const getLiked = async (req,res)=>{
     const {prompt,imageUrl}=req.body
     const user = await LikedModel.findOne({prompt,imageUrl})
     if (user){
+        console.log(user.prompt)
+       
         await LikedModel.deleteOne({_id:user._id})
         res.status(200).json({message:"Deleted Successfully"})
     }
+    
+        
     else{
-        try{
+        console.log(prompt)
+            
             const newLike = new LikedModel({
                 prompt,
                 imageUrl,
@@ -79,21 +84,16 @@ const getLiked = async (req,res)=>{
             await newLike.save()
         
             res.status(200).json({message:"successfully saved"})
-        }
-        catch(e){
-            res.staus(400).json({message:"something went wrong"})
-        }
     }
+        
+    
 }
 
 const likedImage = async (req,res) =>{
     const user = await LikedModel.find()
-    try{
-        res.status(200).json(user)
-    }
-    catch(e){
-        res.status(400).json({message:"something went wrong"})
-    }
+    
+    res.status(200).json(user)
+    
 }
 
 module.exports = { imageCart, getImage ,getLiked,likedImage};
